@@ -35,9 +35,17 @@ defmodule TwoDoWeb.Router do
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router
 
-    scope "/" do
+    scope "/", TwoDoWeb do
       pipe_through :browser
+
       live_dashboard "/dashboard", metrics: TwoDoWeb.Telemetry
+
+      live "/tasks", TaskLive.Index, :index
+      live "/tasks/new", TaskLive.Index, :new
+      live "/tasks/:id/edit", TaskLive.Index, :edit
+
+      live "/tasks/:id", TaskLive.Show, :show
+      live "/tasks/:id/show/edit", TaskLive.Show, :edit
     end
   end
 end
