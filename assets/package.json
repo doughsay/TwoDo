@@ -1,30 +1,33 @@
 {
-  "repository": {},
-  "description": " ",
-  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">= 16.4.x"
+  },
   "scripts": {
-    "deploy": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
+    "deploy": "NODE_ENV=production webpack --mode production",
+    "watch": "NODE_ENV=development webpack --mode development --watch"
   },
   "dependencies": {
+    "alpinejs": "^3.x",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view",
-    "topbar": "^0.1.4"
+    "topbar": "^1.x"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "babel-loader": "^8.0.0",
-    "copy-webpack-plugin": "^5.1.1",
-    "css-loader": "^3.4.2",
-    "sass-loader": "^8.0.2",
-    "node-sass": "^4.13.1",
-    "hard-source-webpack-plugin": "^0.13.1",
-    "mini-css-extract-plugin": "^0.9.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "terser-webpack-plugin": "^2.3.2",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.2"
+    "@babel/core": "^7.x",
+    "@babel/preset-env": "^7.x",
+    "autoprefixer": "^10.x",
+    "babel-loader": "^8.x",
+    "copy-webpack-plugin": "^9.x",
+    "css-loader": "^5.x",
+    "css-minimizer-webpack-plugin": "^3.x",
+    "glob": "^7.x",
+    "mini-css-extract-plugin": "^2.x",
+    "postcss": "^8.x",
+    "postcss-loader": "^6.x",
+    "tailwindcss": "^2.x",
+    "webpack": "^5.x",
+    "webpack-cli": "^4.x"
   }
 }
