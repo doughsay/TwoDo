@@ -40,6 +40,13 @@ defmodule TwoDoWeb.Router do
 
       live_dashboard "/dashboard", metrics: TwoDoWeb.Telemetry
 
+      live "/lists", ListLive.Index, :index
+      live "/lists/new", ListLive.Index, :new
+      live "/lists/:id/edit", ListLive.Index, :edit
+
+      live "/lists/:id", ListLive.Show, :show
+      live "/lists/:id/show/edit", ListLive.Show, :edit
+
       live "/tasks", TaskLive.Index, :index
       live "/tasks/new", TaskLive.Index, :new
       live "/tasks/:id/edit", TaskLive.Index, :edit
