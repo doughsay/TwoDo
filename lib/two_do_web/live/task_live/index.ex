@@ -1,12 +1,17 @@
 defmodule TwoDoWeb.TaskLive.Index do
   use TwoDoWeb, :live_view
 
-  alias TwoDo.Tasks
+  alias TwoDo.{Lists, Tasks}
   alias TwoDo.Tasks.Task
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :tasks, list_tasks())}
+  def mount(%{"list_id" => list_id}, _session, socket) do
+    list = Lists.get_list!(list_id)
+
+    {:ok,
+     socket
+     |> assign(:tasks, Tasks.list_tasks(list))
+     |> assign(:list, list)}
   end
 
   @impl true
@@ -37,10 +42,6 @@ defmodule TwoDoWeb.TaskLive.Index do
     task = Tasks.get_task!(id)
     {:ok, _} = Tasks.delete_task(task)
 
-    {:noreply, assign(socket, :tasks, list_tasks())}
-  end
-
-  defp list_tasks do
-    Tasks.list_tasks()
+    {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
   end
 end

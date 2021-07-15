@@ -1,11 +1,13 @@
 defmodule TwoDoWeb.TaskLive.Show do
   use TwoDoWeb, :live_view
 
-  alias TwoDo.Tasks
+  alias TwoDo.{Lists, Tasks}
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
+  def mount(%{"list_id" => list_id}, _session, socket) do
+    list = Lists.get_list!(list_id)
+
+    {:ok, assign(socket, :list, list)}
   end
 
   @impl true

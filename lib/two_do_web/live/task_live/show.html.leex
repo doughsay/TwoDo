@@ -5,8 +5,9 @@
     id: @task.id,
     title: @page_title,
     action: @live_action,
+    list: @list,
     task: @task,
-    return_to: Routes.task_show_path(@socket, :show, @task) %>
+    return_to: Routes.task_show_path(@socket, :show, @list, @task) %>
 <% end %>
 
 <ul>
@@ -18,5 +19,5 @@
 
 </ul>
 
-<span><%= live_patch "Edit", to: Routes.task_show_path(@socket, :edit, @task), class: "button" %></span>
-<span><%= live_redirect "Back", to: Routes.task_index_path(@socket, :index) %></span>
+<span><%= live_patch "Edit", to: Routes.task_show_path(@socket, :edit, @list, @task), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.task_index_path(@socket, :index, @list) %></span>

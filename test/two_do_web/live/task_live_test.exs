@@ -3,39 +3,47 @@ defmodule TwoDoWeb.TaskLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias TwoDo.Tasks
+  alias TwoDo.{Lists, Tasks}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
-  defp fixture(:task) do
-    {:ok, task} = Tasks.create_task(@create_attrs)
+  defp fixture(schema, opts \\ %{})
+
+  defp fixture(:list, _opts) do
+    {:ok, list} = Lists.create_list(@create_attrs)
+    list
+  end
+
+  defp fixture(:task, %{list: list}) do
+    {:ok, task} = Tasks.create_task(list, @create_attrs)
     task
   end
 
   defp create_task(_) do
-    task = fixture(:task)
-    %{task: task}
+    list = fixture(:list)
+    task = fixture(:task, %{list: list})
+    %{list: list, task: task}
   end
 
   describe "Index" do
     setup [:create_task]
 
-    test "lists all tasks", %{conn: conn, task: task} do
-      {:ok, _index_live, html} = live(conn, Routes.task_index_path(conn, :index))
+    test "lists all tasks", %{conn: conn, list: list, task: task} do
+      {:ok, _index_live, html} = live(conn, Routes.task_index_path(conn, :index, list))
 
       assert html =~ "Listing Tasks"
       assert html =~ task.name
     end
 
-    test "saves new task", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index))
+    test "saves new task", %{conn: conn, list: list} do
+      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
       assert index_live |> element("a", "New Task") |> render_click() =~
                "New Task"
 
-      assert_patch(index_live, Routes.task_index_path(conn, :new))
+      assert_patch(index_live, Routes.task_index_path(conn, :new, list))
 
       assert index_live
              |> form("#task-form", task: @invalid_attrs)
@@ -45,19 +53,19 @@ defmodule TwoDoWeb.TaskLiveTest do
         index_live
         |> form("#task-form", task: @create_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.task_index_path(conn, :index))
+        |> follow_redirect(conn, Routes.task_index_path(conn, :index, list))
 
       assert html =~ "Task created successfully"
       assert html =~ "some name"
     end
 
-    test "updates task in listing", %{conn: conn, task: task} do
-      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index))
+    test "updates task in listing", %{conn: conn, list: list, task: task} do
+      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
       assert index_live |> element("#task-#{task.id} a", "Edit") |> render_click() =~
                "Edit Task"
 
-      assert_patch(index_live, Routes.task_index_path(conn, :edit, task))
+      assert_patch(index_live, Routes.task_index_path(conn, :edit, list, task))
 
       assert index_live
              |> form("#task-form", task: @invalid_attrs)
@@ -67,14 +75,14 @@ defmodule TwoDoWeb.TaskLiveTest do
         index_live
         |> form("#task-form", task: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.task_index_path(conn, :index))
+        |> follow_redirect(conn, Routes.task_index_path(conn, :index, list))
 
       assert html =~ "Task updated successfully"
       assert html =~ "some updated name"
     end
 
-    test "deletes task in listing", %{conn: conn, task: task} do
-      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index))
+    test "deletes task in listing", %{conn: conn, list: list, task: task} do
+      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
       assert index_live |> element("#task-#{task.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#task-#{task.id}")
@@ -84,20 +92,20 @@ defmodule TwoDoWeb.TaskLiveTest do
   describe "Show" do
     setup [:create_task]
 
-    test "displays task", %{conn: conn, task: task} do
-      {:ok, _show_live, html} = live(conn, Routes.task_show_path(conn, :show, task))
+    test "displays task", %{conn: conn, list: list, task: task} do
+      {:ok, _show_live, html} = live(conn, Routes.task_show_path(conn, :show, list, task))
 
       assert html =~ "Show Task"
       assert html =~ task.name
     end
 
-    test "updates task within modal", %{conn: conn, task: task} do
-      {:ok, show_live, _html} = live(conn, Routes.task_show_path(conn, :show, task))
+    test "updates task within modal", %{conn: conn, list: list, task: task} do
+      {:ok, show_live, _html} = live(conn, Routes.task_show_path(conn, :show, list, task))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Task"
 
-      assert_patch(show_live, Routes.task_show_path(conn, :edit, task))
+      assert_patch(show_live, Routes.task_show_path(conn, :edit, list, task))
 
       assert show_live
              |> form("#task-form", task: @invalid_attrs)
@@ -107,7 +115,7 @@ defmodule TwoDoWeb.TaskLiveTest do
         show_live
         |> form("#task-form", task: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.task_show_path(conn, :show, task))
+        |> follow_redirect(conn, Routes.task_show_path(conn, :show, list, task))
 
       assert html =~ "Task updated successfully"
       assert html =~ "some updated name"

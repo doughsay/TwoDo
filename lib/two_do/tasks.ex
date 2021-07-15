@@ -6,19 +6,22 @@ defmodule TwoDo.Tasks do
   import Ecto.Query, warn: false
   alias TwoDo.Repo
 
+  alias TwoDo.Lists.List
   alias TwoDo.Tasks.Task
 
   @doc """
-  Returns the list of tasks.
+  Returns the list of tasks for a given list.
 
   ## Examples
 
-      iex> list_tasks()
+      iex> list_tasks(%List{})
       [%Task{}, ...]
 
   """
-  def list_tasks do
-    Repo.all(Task)
+  def list_tasks(%List{id: list_id}) do
+    Task
+    |> where(list_id: ^list_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -38,19 +41,19 @@ defmodule TwoDo.Tasks do
   def get_task!(id), do: Repo.get!(Task, id)
 
   @doc """
-  Creates a task.
+  Creates a task for the given list.
 
   ## Examples
 
-      iex> create_task(%{field: value})
+      iex> create_task(%List{}, %{field: value})
       {:ok, %Task{}}
 
-      iex> create_task(%{field: bad_value})
+      iex> create_task(%List{}, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_task(attrs \\ %{}) do
-    %Task{}
+  def create_task(%List{id: list_id}, attrs \\ %{}) do
+    %Task{list_id: list_id}
     |> Task.changeset(attrs)
     |> Repo.insert()
   end

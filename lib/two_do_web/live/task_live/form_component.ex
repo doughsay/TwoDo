@@ -41,7 +41,7 @@ defmodule TwoDoWeb.TaskLive.FormComponent do
   end
 
   defp save_task(socket, :new, task_params) do
-    case Tasks.create_task(task_params) do
+    case Tasks.create_task(socket.assigns.list, task_params) do
       {:ok, _task} ->
         {:noreply,
          socket
