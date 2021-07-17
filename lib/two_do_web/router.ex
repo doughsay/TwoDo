@@ -44,15 +44,10 @@ defmodule TwoDoWeb.Router do
       live "/lists/new", ListLive.Index, :new
       live "/lists/:id/edit", ListLive.Index, :edit
 
-      live "/lists/:id", ListLive.Show, :show
-      live "/lists/:id/show/edit", ListLive.Show, :edit
-
       live "/lists/:list_id/tasks", TaskLive.Index, :index
       live "/lists/:list_id/tasks/new", TaskLive.Index, :new
+      live "/lists/:list_id/tasks/:id", TaskLive.Index, :show
       live "/lists/:list_id/tasks/:id/edit", TaskLive.Index, :edit
-
-      live "/lists/:list_id/tasks/:id", TaskLive.Show, :show
-      live "/lists/:list_id/tasks/:id/show/edit", TaskLive.Show, :edit
     end
   end
 end

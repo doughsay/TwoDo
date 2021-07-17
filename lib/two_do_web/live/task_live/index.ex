@@ -19,6 +19,12 @@ defmodule TwoDoWeb.TaskLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  defp apply_action(socket, :show, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Show Task")
+    |> assign(:task, Tasks.get_task!(id))
+  end
+
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Task")

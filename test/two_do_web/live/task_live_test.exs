@@ -37,6 +37,15 @@ defmodule TwoDoWeb.TaskLiveTest do
       assert html =~ task.name
     end
 
+    test "shows task in modal", %{conn: conn, list: list, task: task} do
+      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
+
+      assert index_live |> element("#task-#{task.id} a", "Show") |> render_click() =~
+               "Show Task"
+
+      assert_patch(index_live, Routes.task_index_path(conn, :show, list, task))
+    end
+
     test "saves new task", %{conn: conn, list: list} do
       {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
@@ -86,39 +95,6 @@ defmodule TwoDoWeb.TaskLiveTest do
 
       assert index_live |> element("#task-#{task.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#task-#{task.id}")
-    end
-  end
-
-  describe "Show" do
-    setup [:create_task]
-
-    test "displays task", %{conn: conn, list: list, task: task} do
-      {:ok, _show_live, html} = live(conn, Routes.task_show_path(conn, :show, list, task))
-
-      assert html =~ "Show Task"
-      assert html =~ task.name
-    end
-
-    test "updates task within modal", %{conn: conn, list: list, task: task} do
-      {:ok, show_live, _html} = live(conn, Routes.task_show_path(conn, :show, list, task))
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Task"
-
-      assert_patch(show_live, Routes.task_show_path(conn, :edit, list, task))
-
-      assert show_live
-             |> form("#task-form", task: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        show_live
-        |> form("#task-form", task: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, Routes.task_show_path(conn, :show, list, task))
-
-      assert html =~ "Task updated successfully"
-      assert html =~ "some updated name"
     end
   end
 end

@@ -80,37 +80,4 @@ defmodule TwoDoWeb.ListLiveTest do
       refute has_element?(index_live, "#list-#{list.id}")
     end
   end
-
-  describe "Show" do
-    setup [:create_list]
-
-    test "displays list", %{conn: conn, list: list} do
-      {:ok, _show_live, html} = live(conn, Routes.list_show_path(conn, :show, list))
-
-      assert html =~ "Show List"
-      assert html =~ list.name
-    end
-
-    test "updates list within modal", %{conn: conn, list: list} do
-      {:ok, show_live, _html} = live(conn, Routes.list_show_path(conn, :show, list))
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit List"
-
-      assert_patch(show_live, Routes.list_show_path(conn, :edit, list))
-
-      assert show_live
-             |> form("#list-form", list: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        show_live
-        |> form("#list-form", list: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, Routes.list_show_path(conn, :show, list))
-
-      assert html =~ "List updated successfully"
-      assert html =~ "some updated name"
-    end
-  end
 end

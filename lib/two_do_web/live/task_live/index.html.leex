@@ -10,6 +10,15 @@
     return_to: Routes.task_index_path(@socket, :index, @list) %>
 <% end %>
 
+<%= if @live_action == :show do %>
+  <%= live_modal @socket, TwoDoWeb.TaskLive.ShowComponent,
+    id: @task.id,
+    title: @page_title,
+    action: @live_action,
+    task: @task,
+    return_to: Routes.task_index_path(@socket, :index, @list) %>
+<% end %>
+
 <table>
   <thead>
     <tr>
@@ -24,7 +33,7 @@
         <td><%= task.name %></td>
 
         <td>
-          <span><%= live_redirect "Show", to: Routes.task_show_path(@socket, :show, @list, task) %></span>
+          <span><%= live_patch "Show", to: Routes.task_index_path(@socket, :show, @list, task) %></span>
           <span><%= live_patch "Edit", to: Routes.task_index_path(@socket, :edit, @list, task) %></span>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: task.id, data: [confirm: "Are you sure?"] %></span>
         </td>
@@ -34,3 +43,4 @@
 </table>
 
 <span><%= live_patch "New Task", to: Routes.task_index_path(@socket, :new, @list) %></span>
+<span><%= live_redirect "Back", to: Routes.list_index_path(@socket, :index) %></span>
