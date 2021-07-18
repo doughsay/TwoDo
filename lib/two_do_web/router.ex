@@ -17,7 +17,14 @@ defmodule TwoDoWeb.Router do
   scope "/", TwoDoWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    live "/", ListLive.Index, :index
+    live "/new", ListLive.Index, :new
+    live "/:id/edit", ListLive.Index, :edit
+
+    live "/:list_id/tasks", TaskLive.Index, :index
+    live "/:list_id/tasks/new", TaskLive.Index, :new
+    live "/:list_id/tasks/:id", TaskLive.Index, :show
+    live "/:list_id/tasks/:id/edit", TaskLive.Index, :edit
   end
 
   # Other scopes may use custom stacks.
@@ -39,15 +46,6 @@ defmodule TwoDoWeb.Router do
       pipe_through :browser
 
       live_dashboard "/dashboard", metrics: TwoDoWeb.Telemetry
-
-      live "/lists", ListLive.Index, :index
-      live "/lists/new", ListLive.Index, :new
-      live "/lists/:id/edit", ListLive.Index, :edit
-
-      live "/lists/:list_id/tasks", TaskLive.Index, :index
-      live "/lists/:list_id/tasks/new", TaskLive.Index, :new
-      live "/lists/:list_id/tasks/:id", TaskLive.Index, :show
-      live "/lists/:list_id/tasks/:id/edit", TaskLive.Index, :edit
     end
   end
 end
