@@ -6,7 +6,7 @@ defmodule TwoDoWeb.ListLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :lists, list_lists())}
+    {:ok, assign(socket, :lists, Lists.list_lists())}
   end
 
   @impl true
@@ -28,7 +28,7 @@ defmodule TwoDoWeb.ListLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Lists")
+    |> assign(:page_title, "Lists")
     |> assign(:list, nil)
   end
 
@@ -37,10 +37,12 @@ defmodule TwoDoWeb.ListLive.Index do
     list = Lists.get_list!(id)
     {:ok, _} = Lists.delete_list(list)
 
-    {:noreply, assign(socket, :lists, list_lists())}
+    {:noreply, assign(socket, :lists, Lists.list_lists())}
   end
 
-  defp list_lists do
-    Lists.list_lists()
+  def handle_event("sort", %{"ids" => ids}, socket) do
+    lists = Lists.sort_lists!(ids)
+
+    {:noreply, assign(socket, :lists, lists)}
   end
 end

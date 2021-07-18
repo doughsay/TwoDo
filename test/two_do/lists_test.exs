@@ -60,5 +60,16 @@ defmodule TwoDo.ListsTest do
       list = list_fixture()
       assert %Ecto.Changeset{} = Lists.change_list(list)
     end
+
+    test "sort_lists/1 sorts lists" do
+      [%{id: list1}, %{id: list2}, %{id: list3}] = [
+        list_fixture(),
+        list_fixture(),
+        list_fixture()
+      ]
+
+      assert lists = Lists.sort_lists!([list1, list3, list2])
+      assert [{^list1, 0}, {^list3, 1}, {^list2, 2}] = Enum.map(lists, &{&1.id, &1.order})
+    end
   end
 end

@@ -9,7 +9,13 @@ module.exports = {
     './js/**/*.js'
   ],
   darkMode: false, // or 'media' or 'class'
-  theme: {},
+  theme: {
+    extend: {
+      colors: {
+        gray: colors.blueGray
+      }
+    }
+  },
   variants: {
     extend: {}
   },

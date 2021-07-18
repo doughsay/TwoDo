@@ -18,7 +18,7 @@ defmodule TwoDo.Lists do
 
   """
   def list_lists do
-    Repo.all(List)
+    List |> order_by(:order) |> Repo.all()
   end
 
   @doc """
@@ -50,7 +50,9 @@ defmodule TwoDo.Lists do
 
   """
   def create_list(attrs \\ %{}) do
-    %List{}
+    next_order = List |> select([l], max(l.order) + 1) |> Repo.one!()
+
+    %List{order: next_order || 0}
     |> List.changeset(attrs)
     |> Repo.insert()
   end
@@ -100,5 +102,35 @@ defmodule TwoDo.Lists do
   """
   def change_list(%List{} = list, attrs \\ %{}) do
     List.changeset(list, attrs)
+  end
+
+  @doc """
+  Sorts lists by updating the `order` field on all the lists given by the list
+  of IDs.
+
+  ## Examples
+
+      iex> sort_lists([1, 3, 2])
+      {:ok, [%List{id: 1, order: 0}, %List{id: 3, order: 1}, %List{id: 2, order: 2}]}
+  """
+  # Improvement opportunities:
+  # * we can replace the N select queries with 1 select query but then we would
+  #   have to manually cast the IDs. This is efficient enough for small
+  #   use-cases like this app.
+  # * we can replace the N update queries with 1 query with some clever postgres
+  #   magic, but that's outside the scope of this project.
+  def sort_lists!(ids) do
+    {:ok, lists} =
+      Repo.transaction(fn ->
+        ids
+        |> Enum.with_index()
+        |> Enum.map(fn {id, order} ->
+          list = get_list!(id)
+          {:ok, list} = update_list(list, %{order: order})
+          list
+        end)
+      end)
+
+    lists
   end
 end

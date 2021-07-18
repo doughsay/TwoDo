@@ -25,7 +25,6 @@ defmodule TwoDoWeb.ListLiveTest do
     test "lists all lists", %{conn: conn, list: list} do
       {:ok, _index_live, html} = live(conn, Routes.list_index_path(conn, :index))
 
-      assert html =~ "Listing Lists"
       assert html =~ list.name
     end
 

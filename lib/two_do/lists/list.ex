@@ -4,6 +4,7 @@ defmodule TwoDo.Lists.List do
 
   schema "lists" do
     field :name, :string
+    field :order, :integer
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule TwoDo.Lists.List do
   @doc false
   def changeset(list, attrs) do
     list
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :order])
+    |> validate_required([:name, :order])
   end
 end
