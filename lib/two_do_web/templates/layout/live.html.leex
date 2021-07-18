@@ -5,7 +5,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
         </svg>
-        <span class="hidden">New List</span>
+        <span class="hidden">New</span>
       <% end %>
     <% end %>
   </div>
@@ -13,13 +13,13 @@
 
 <main role="main" class="m-auto max-w-6xl p-2 sm:p-4">
 
-  <p class="alert alert-info" role="alert"
+  <p class="hidden" role="alert"
     phx-click="lv:clear-flash"
-    phx-value-key="info"><%# live_flash(@flash, :info) %></p>
+    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
 
-  <p class="alert alert-danger" role="alert"
+  <p class="hidden" role="alert"
     phx-click="lv:clear-flash"
-    phx-value-key="error"><%# live_flash(@flash, :error) %></p>
+    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
 
   <%= @inner_content %>
 </main>

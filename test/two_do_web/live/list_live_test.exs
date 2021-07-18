@@ -31,7 +31,7 @@ defmodule TwoDoWeb.ListLiveTest do
     test "saves new list", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, Routes.list_index_path(conn, :index))
 
-      assert index_live |> element("a", "New List") |> render_click() =~
+      assert index_live |> element("a", "New") |> render_click() =~
                "New List"
 
       assert_patch(index_live, Routes.list_index_path(conn, :new))

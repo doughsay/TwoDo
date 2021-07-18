@@ -49,7 +49,7 @@ defmodule TwoDoWeb.TaskLiveTest do
     test "saves new task", %{conn: conn, list: list} do
       {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
-      assert index_live |> element("a", "New Task") |> render_click() =~
+      assert index_live |> element("a", "New") |> render_click() =~
                "New Task"
 
       assert_patch(index_live, Routes.task_index_path(conn, :new, list))
