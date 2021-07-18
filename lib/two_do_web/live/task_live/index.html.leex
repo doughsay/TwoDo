@@ -1,4 +1,11 @@
-<h1>Listing Tasks</h1>
+<span>
+  <%= live_redirect to: Routes.list_index_path(@socket, :index) do %>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+    <span class="hidden">Back</span>
+  <% end %>
+</span>
 
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, TwoDoWeb.TaskLive.FormComponent,
@@ -35,12 +42,9 @@
         <td>
           <span><%= live_patch "Show", to: Routes.task_index_path(@socket, :show, @list, task) %></span>
           <span><%= live_patch "Edit", to: Routes.task_index_path(@socket, :edit, @list, task) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: task.id, data: [confirm: "Are you sure?"] %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: task.id, data: [confirm: "Are you sure you want to permenantly delete this task?"] %></span>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<span><%= live_patch "New Task", to: Routes.task_index_path(@socket, :new, @list) %></span>
-<span><%= live_redirect "Back", to: Routes.list_index_path(@socket, :index) %></span>

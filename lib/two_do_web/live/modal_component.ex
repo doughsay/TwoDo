@@ -11,7 +11,7 @@ defmodule TwoDoWeb.ModalComponent do
       phx-target="#<%= @id %>"
       phx-page-loading>
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <div phx-capture-click="close" phx-target="#<%= @id %>" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
