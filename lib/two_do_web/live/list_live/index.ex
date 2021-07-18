@@ -6,7 +6,10 @@ defmodule TwoDoWeb.ListLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :lists, Lists.list_lists())}
+    {:ok,
+     socket
+     |> assign(:lists, Lists.list_lists())
+     |> assign(:layout_add_url, Routes.list_index_path(socket, :new))}
   end
 
   @impl true

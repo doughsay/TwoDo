@@ -10,8 +10,7 @@
 <div
   id="lists"
   phx-hook="sortable"
-  class="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-6"
->
+  class="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-6">
   <%= for list <- @lists do %>
     <div
       id="list-<%= list.id %>"
@@ -26,12 +25,10 @@
         shadow-md
         group
         overflow-hidden
-      "
-    >
+      ">
       <%= live_redirect list.name,
         to: Routes.task_index_path(@socket, :index, list),
-        class: "block p-2 h-32 text-white group-hover:overflow-hidden"
-      %>
+        class: "block p-2 h-32 text-white group-hover:overflow-hidden" %>
 
       <div class="flex p-2 bg-gray-900 rounded-b-md invisible group-hover:visible">
         <div class="flex-1 text-white">
@@ -55,5 +52,3 @@
     </div>
   <% end %>
 </div>
-
-<span><%= live_patch "New List", to: Routes.list_index_path(@socket, :new) %></span>
