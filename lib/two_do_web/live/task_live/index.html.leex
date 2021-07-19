@@ -43,47 +43,56 @@
     </div>
   </div>
 
-  <div id="tasks" class="bg-white rounded-md mt-1 divide-y divide-gray-100" phx-hook="sortable" data-sortable-handle-class="draggable-handle">
-    <%= for task <- @tasks do %>
-      <div id="task-<%= task.id %>" data-sortable-id="<%= task.id %>">
-        <div class="bg-white rounded-md flex flex-row place-items-center group">
-          <%= if task.id == @keyboard_selected_task_id do %>
-            <div class="h-10 w-2 bg-blue-500 -ml-2"></div>
-          <% end %>
-          <div class="flex-none draggable-handle py-4 px-2 text-gray-400 cursor-move invisible group-hover:visible">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-            </svg>
-          </div>
-          <div class="flex-none h-6 w-6 border-2 border-gray-300 cursor-pointer text-green-500"
-            phx-click="toggle" phx-value-task="<%= task.id %>">
-            <%= if task.state == :done do %>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 -mt-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+  <%= if @tasks == [] do %>
+    <p class="text-center text-gray-500 italic mt-8">
+      This list has no tasks. You can
+      <%= live_patch "create a new task", to: Routes.task_index_path(@socket, :new, @list),
+        class: "text-blue-500" %>
+      using the "+" icon in the upper right corner.
+    </p>
+  <% else %>
+    <div id="tasks" class="bg-white rounded-md mt-1 divide-y divide-gray-100" phx-hook="sortable" data-sortable-handle-class="draggable-handle">
+      <%= for task <- @tasks do %>
+        <div id="task-<%= task.id %>" data-sortable-id="<%= task.id %>">
+          <div class="bg-white rounded-md flex flex-row place-items-center group">
+            <%= if task.id == @keyboard_selected_task_id do %>
+              <div class="h-10 w-2 bg-blue-500 -ml-2"></div>
+            <% end %>
+            <div class="flex-none draggable-handle py-4 px-2 text-gray-400 cursor-move invisible group-hover:visible">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
               </svg>
-            <% end %>
-          </div>
-          <div class="flex-grow">
-            <%= if task.state == :done do %>
-              <span class="block p-4 italic line-through text-gray-400"><%= task.name %></span>
-            <% else %>
-              <%= live_patch to: Routes.task_index_path(@socket, :edit, @list, task), class: "block p-4" do %>
-                <%= task.name %>
-              <% end %>
-            <% end %>
-          </div>
-          <%= if task.state != :done do %>
-            <div class="flex-none text-blue-600 invisible group-hover:visible">
-              <%= live_patch to: Routes.task_index_path(@socket, :edit, @list, task), class: "block p-4" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </div>
+            <div class="flex-none h-6 w-6 border-2 border-gray-300 cursor-pointer text-green-500"
+              phx-click="toggle" phx-value-task="<%= task.id %>">
+              <%= if task.state == :done do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 -mt-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span class="hidden">Edit</span>
               <% end %>
             </div>
-          <% end %>
+            <div class="flex-grow">
+              <%= if task.state == :done do %>
+                <span class="block p-4 italic line-through text-gray-400"><%= task.name %></span>
+              <% else %>
+                <%= live_patch to: Routes.task_index_path(@socket, :edit, @list, task), class: "block p-4" do %>
+                  <%= task.name %>
+                <% end %>
+              <% end %>
+            </div>
+            <%= if task.state != :done do %>
+              <div class="flex-none text-blue-600 invisible group-hover:visible">
+                <%= live_patch to: Routes.task_index_path(@socket, :edit, @list, task), class: "block p-4" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <span class="hidden">Edit</span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>
