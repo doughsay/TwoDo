@@ -3,9 +3,12 @@ defmodule TwoDoWeb.ListLive.Index do
 
   alias TwoDo.Lists
   alias TwoDo.Lists.List
+  alias TwoDo.PubSub
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket), do: PubSub.subscribe("lists")
+
     {:ok,
      socket
      |> assign(:lists, Lists.list_lists())
@@ -47,5 +50,10 @@ defmodule TwoDoWeb.ListLive.Index do
     lists = Lists.sort_lists!(ids)
 
     {:noreply, assign(socket, :lists, lists)}
+  end
+
+  @impl true
+  def handle_info(:lists_updated, socket) do
+    {:noreply, assign(socket, :lists, Lists.list_lists())}
   end
 end

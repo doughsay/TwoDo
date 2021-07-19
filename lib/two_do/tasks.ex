@@ -3,10 +3,11 @@ defmodule TwoDo.Tasks do
   The Tasks context.
   """
 
-  import Ecto.Query, warn: false
-  alias TwoDo.Repo
+  import Ecto.Query
 
   alias TwoDo.Lists.List
+  alias TwoDo.PubSub
+  alias TwoDo.Repo
   alias TwoDo.Tasks.Task
 
   @doc """
@@ -63,6 +64,10 @@ defmodule TwoDo.Tasks do
     %Task{list_id: list_id, order: next_order || 0}
     |> Task.changeset(attrs)
     |> Repo.insert()
+    |> tap(fn
+      {:ok, task} -> PubSub.broadcast("lists:#{task.list_id}", :tasks_updated)
+      {:error, _changeset} -> :noop
+    end)
   end
 
   @doc """
@@ -78,6 +83,16 @@ defmodule TwoDo.Tasks do
 
   """
   def update_task(%Task{} = task, attrs) do
+    task
+    |> do_update_task(attrs)
+    |> tap(fn
+      {:ok, task} -> PubSub.broadcast("lists:#{task.list_id}", :tasks_updated)
+      {:error, _changeset} -> :noop
+    end)
+  end
+
+  # So we can use this without broadcasting
+  defp do_update_task(task, attrs) do
     task
     |> Task.changeset(attrs)
     |> Repo.update()
@@ -96,7 +111,12 @@ defmodule TwoDo.Tasks do
 
   """
   def delete_task(%Task{} = task) do
-    Repo.delete(task)
+    task
+    |> Repo.delete()
+    |> tap(fn
+      {:ok, task} -> PubSub.broadcast("lists:#{task.list_id}", :tasks_updated)
+      {:error, _changeset} -> :noop
+    end)
   end
 
   @doc """
@@ -114,7 +134,7 @@ defmodule TwoDo.Tasks do
 
   @doc """
   Sorts tasks by updating the `order` field on all the tasks given by the list
-  of IDs.
+  of IDs. Raises if not all tasks belong to the given list.
 
   ## Examples
 
@@ -127,17 +147,23 @@ defmodule TwoDo.Tasks do
   #   use-cases like this app.
   # * we can replace the N update queries with 1 query with some clever postgres
   #   magic, but that's outside the scope of this project.
-  def sort_tasks!(ids) do
+  def sort_tasks!(%List{id: list_id}, ids) do
     {:ok, tasks} =
       Repo.transaction(fn ->
         ids
         |> Enum.with_index()
         |> Enum.map(fn {id, order} ->
           task = get_task!(id)
-          {:ok, task} = update_task(task, %{order: order})
+
+          # assert the task belongs to the given list
+          ^list_id = task.list_id
+
+          {:ok, task} = do_update_task(task, %{order: order})
           task
         end)
       end)
+
+    PubSub.broadcast("lists:#{list_id}", :tasks_updated)
 
     tasks
   end

@@ -92,7 +92,7 @@ defmodule TwoDo.TasksTest do
         task_fixture(list)
       ]
 
-      assert tasks = Tasks.sort_tasks!([task1, task3, task2])
+      assert tasks = Tasks.sort_tasks!(list, [task1, task3, task2])
       assert [{^task1, 0}, {^task3, 1}, {^task2, 2}] = Enum.map(tasks, &{&1.id, &1.order})
     end
   end

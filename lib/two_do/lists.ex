@@ -3,10 +3,11 @@ defmodule TwoDo.Lists do
   The Lists context.
   """
 
-  import Ecto.Query, warn: false
-  alias TwoDo.Repo
+  import Ecto.Query
 
   alias TwoDo.Lists.List
+  alias TwoDo.PubSub
+  alias TwoDo.Repo
 
   @doc """
   Returns the list of lists.
@@ -55,6 +56,10 @@ defmodule TwoDo.Lists do
     %List{order: next_order || 0}
     |> List.changeset(attrs)
     |> Repo.insert()
+    |> tap(fn
+      {:ok, _task} -> PubSub.broadcast("lists", :lists_updated)
+      {:error, _changeset} -> :noop
+    end)
   end
 
   @doc """
@@ -70,6 +75,16 @@ defmodule TwoDo.Lists do
 
   """
   def update_list(%List{} = list, attrs) do
+    list
+    |> do_update_list(attrs)
+    |> tap(fn
+      {:ok, _task} -> PubSub.broadcast("lists", :lists_updated)
+      {:error, _changeset} -> :noop
+    end)
+  end
+
+  # So we can use this without broadcasting
+  defp do_update_list(list, attrs) do
     list
     |> List.changeset(attrs)
     |> Repo.update()
@@ -88,7 +103,12 @@ defmodule TwoDo.Lists do
 
   """
   def delete_list(%List{} = list) do
-    Repo.delete(list)
+    list
+    |> Repo.delete()
+    |> tap(fn
+      {:ok, _task} -> PubSub.broadcast("lists", :lists_updated)
+      {:error, _changeset} -> :noop
+    end)
   end
 
   @doc """
@@ -126,10 +146,12 @@ defmodule TwoDo.Lists do
         |> Enum.with_index()
         |> Enum.map(fn {id, order} ->
           list = get_list!(id)
-          {:ok, list} = update_list(list, %{order: order})
+          {:ok, list} = do_update_list(list, %{order: order})
           list
         end)
       end)
+
+    PubSub.broadcast("lists", :lists_updated)
 
     lists
   end

@@ -1,12 +1,16 @@
 defmodule TwoDoWeb.TaskLive.Index do
   use TwoDoWeb, :live_view
 
-  alias TwoDo.{Lists, Tasks}
+  alias TwoDo.Lists
+  alias TwoDo.PubSub
+  alias TwoDo.Tasks
   alias TwoDo.Tasks.Task
 
   @impl true
   def mount(%{"list_id" => list_id}, _session, socket) do
     list = Lists.get_list!(list_id)
+
+    if connected?(socket), do: PubSub.subscribe("lists:#{list.id}")
 
     {:ok,
      socket
@@ -53,8 +57,13 @@ defmodule TwoDoWeb.TaskLive.Index do
   end
 
   def handle_event("sort", %{"ids" => ids}, socket) do
-    tasks = Tasks.sort_tasks!(ids)
+    tasks = Tasks.sort_tasks!(socket.assigns.list, ids)
 
     {:noreply, assign(socket, :tasks, tasks)}
+  end
+
+  @impl true
+  def handle_info(:tasks_updated, socket) do
+    {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
   end
 end
