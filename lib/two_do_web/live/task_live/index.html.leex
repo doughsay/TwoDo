@@ -17,18 +17,29 @@
     return_to: Routes.task_index_path(@socket, :index, @list) %>
 <% end %>
 
-<div class="max-w-xl m-auto text-gray-800 relative">
-  <div class="absolute left-0 top-2">
-    <%= live_redirect to: Routes.list_index_path(@socket, :index) do %>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      <span class="hidden">Back</span>
-    <% end %>
-  </div>
+<div class="max-w-xl m-auto text-gray-800">
+  <div class="flex flex-row place-items-end">
+    <div class="h-6 w-6">
+      <%= live_redirect to: Routes.list_index_path(@socket, :index) do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="hidden">Back</span>
+      <% end %>
+    </div>
 
-  <div class="text-2xl font-bold text-center">
-    <%= @list.name %>
+    <div class="text-2xl font-bold text-center flex-grow">
+      <%= @list.name %>
+    </div>
+
+    <div class="h-6 w-6">
+      <%= live_patch to: Routes.task_index_path(@socket, :new, @list) do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span class="hidden">New</span>
+      <% end %>
+    </div>
   </div>
 
   <div id="tasks" class="bg-white rounded-md mt-1 divide-y divide-gray-100" phx-hook="sortable" data-sortable-handle-class="draggable-handle">

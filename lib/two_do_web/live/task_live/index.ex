@@ -15,8 +15,7 @@ defmodule TwoDoWeb.TaskLive.Index do
     {:ok,
      socket
      |> assign(:tasks, Tasks.list_tasks(list))
-     |> assign(:list, list)
-     |> assign(:layout_add_url, Routes.task_index_path(socket, :new, list))}
+     |> assign(:list, list)}
   end
 
   @impl true

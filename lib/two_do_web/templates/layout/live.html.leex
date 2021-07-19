@@ -1,12 +1,17 @@
 <header class="w-full text-white bg-gray-800 shadow-md">
-  <div class="m-auto max-w-6xl p-2 sm:p-4">
+  <div class="m-auto max-w-6xl p-2 sm:p-4 flex flex-row place-items-center">
+    <h1 class="font-bold text-lg sm:text-xl flex-grow">
+      <span class="text-blue-300">Two</span><span class="text-yellow-300">Do</span>
+    </h1>
     <%= if url = assigns[:layout_add_url] do %>
-      <%= live_patch to: url do %>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-        </svg>
-        <span class="hidden">New</span>
-      <% end %>
+      <div class="h-6 w-6">
+        <%= live_patch to: url do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span class="hidden">New</span>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </header>
