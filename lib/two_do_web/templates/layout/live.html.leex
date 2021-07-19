@@ -20,6 +20,8 @@
 
 <main role="main" class="m-auto max-w-6xl p-2 sm:p-4">
 
+  <%# The flashes are hidden, because I'm not sure of their usefulness, but they
+ remain here for now as the tests use them to verify actions. %>
   <p class="hidden" role="alert"
     phx-click="lv:clear-flash"
     phx-value-key="info"><%= live_flash(@flash, :info) %></p>

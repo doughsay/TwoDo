@@ -44,7 +44,7 @@ defmodule TwoDoWeb.Router do
     scope "/", TwoDoWeb do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: TwoDoWeb.Telemetry
+      live_dashboard "/dashboard", metrics: TwoDoWeb.Telemetry, ecto_repos: [TwoDo.Repo]
     end
   end
 end
