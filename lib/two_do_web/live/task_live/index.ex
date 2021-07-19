@@ -51,4 +51,10 @@ defmodule TwoDoWeb.TaskLive.Index do
 
     {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
   end
+
+  def handle_event("sort", %{"ids" => ids}, socket) do
+    tasks = Tasks.sort_tasks!(ids)
+
+    {:noreply, assign(socket, :tasks, tasks)}
+  end
 end

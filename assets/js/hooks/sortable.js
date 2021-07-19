@@ -10,7 +10,9 @@ export const SortableHook = {
 }
 
 const init = (element, callback) => {
-  new Sortable(element, {
+  const handleClass = element.dataset.sortableHandleClass
+  let opts = {
+    animation: 150,
     onSort: _evt => {
       callback(
         [...element.querySelectorAll('[data-sortable-id]')].map(
@@ -18,5 +20,11 @@ const init = (element, callback) => {
         )
       )
     }
-  })
+  }
+
+  if (handleClass) {
+    opts.handle = '.' + handleClass
+  }
+
+  new Sortable(element, opts)
 }

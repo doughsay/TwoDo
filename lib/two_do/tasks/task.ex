@@ -8,6 +8,7 @@ defmodule TwoDo.Tasks.Task do
     belongs_to :list, List
 
     field :name, :string
+    field :order, :integer
 
     timestamps()
   end
@@ -15,7 +16,7 @@ defmodule TwoDo.Tasks.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :order])
+    |> validate_required([:name, :order])
   end
 end

@@ -21,6 +21,7 @@ defmodule TwoDo.Tasks do
   def list_tasks(%List{id: list_id}) do
     Task
     |> where(list_id: ^list_id)
+    |> order_by(:order)
     |> Repo.all()
   end
 
@@ -53,7 +54,13 @@ defmodule TwoDo.Tasks do
 
   """
   def create_task(%List{id: list_id}, attrs \\ %{}) do
-    %Task{list_id: list_id}
+    next_order =
+      Task
+      |> select([t], max(t.order) + 1)
+      |> where(list_id: ^list_id)
+      |> Repo.one!()
+
+    %Task{list_id: list_id, order: next_order || 0}
     |> Task.changeset(attrs)
     |> Repo.insert()
   end
@@ -103,5 +110,35 @@ defmodule TwoDo.Tasks do
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  @doc """
+  Sorts tasks by updating the `order` field on all the tasks given by the list
+  of IDs.
+
+  ## Examples
+
+      iex> sort_tasks([1, 3, 2])
+      {:ok, [%Task{id: 1, order: 0}, %Task{id: 3, order: 1}, %Task{id: 2, order: 2}]}
+  """
+  # Improvement opportunities:
+  # * we can replace the N select queries with 1 select query but then we would
+  #   have to manually cast the IDs. This is efficient enough for small
+  #   use-cases like this app.
+  # * we can replace the N update queries with 1 query with some clever postgres
+  #   magic, but that's outside the scope of this project.
+  def sort_tasks!(ids) do
+    {:ok, tasks} =
+      Repo.transaction(fn ->
+        ids
+        |> Enum.with_index()
+        |> Enum.map(fn {id, order} ->
+          task = get_task!(id)
+          {:ok, task} = update_task(task, %{order: order})
+          task
+        end)
+      end)
+
+    tasks
   end
 end

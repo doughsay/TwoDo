@@ -82,5 +82,18 @@ defmodule TwoDo.TasksTest do
       task = task_fixture(list)
       assert %Ecto.Changeset{} = Tasks.change_task(task)
     end
+
+    test "sort_tasks/1 sorts tasks", context do
+      %{list: list} = context
+
+      [%{id: task1}, %{id: task2}, %{id: task3}] = [
+        task_fixture(list),
+        task_fixture(list),
+        task_fixture(list)
+      ]
+
+      assert tasks = Tasks.sort_tasks!([task1, task3, task2])
+      assert [{^task1, 0}, {^task3, 1}, {^task2, 2}] = Enum.map(tasks, &{&1.id, &1.order})
+    end
   end
 end
