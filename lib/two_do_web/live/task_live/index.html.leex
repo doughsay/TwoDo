@@ -17,7 +17,8 @@
     return_to: Routes.task_index_path(@socket, :index, @list) %>
 <% end %>
 
-<div class="max-w-xl m-auto text-gray-800">
+<div class="max-w-xl m-auto text-gray-800"
+  phx-window-keyup="shortcut">
   <div class="flex flex-row place-items-end">
     <div class="h-6 w-6 text-gray-400 hover:text-gray-800">
       <%= live_redirect to: Routes.list_index_path(@socket, :index) do %>
@@ -46,6 +47,9 @@
     <%= for task <- @tasks do %>
       <div id="task-<%= task.id %>" data-sortable-id="<%= task.id %>">
         <div class="bg-white rounded-md flex flex-row place-items-center group">
+          <%= if task.id == @keyboard_selected_task_id do %>
+            <div class="h-10 w-2 bg-blue-500 -ml-2"></div>
+          <% end %>
           <div class="flex-none draggable-handle py-4 px-2 text-gray-400 cursor-move invisible group-hover:visible">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />

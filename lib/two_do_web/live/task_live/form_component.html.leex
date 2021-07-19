@@ -26,7 +26,12 @@
   <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
     <%= submit "Save", phx_disable_with: "Saving...", class: "w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" %>
     <%= if @id != :new do %>
-      <%= link "Delete Task", to: "#", phx_click: "delete", phx_target: @myself, phx_value_id: @task.id, data: [confirm: "Are you sure you want to permenantly delete this task?"], class: "text-red-600 pt-2" %>
+      <%= link "Delete Task", to: "#",
+        phx_click: "delete",
+        phx_target: @myself,
+        phx_value_id: @task.id,
+        data: [confirm: "Are you sure you want to permenantly delete this task?"],
+        class: "text-red-600 pt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600" %>
     <% end %>
   </div>
 </form>
