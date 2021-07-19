@@ -16,10 +16,7 @@ import 'phoenix_html'
 import { Socket } from 'phoenix'
 import topbar from 'topbar'
 import { LiveSocket } from 'phoenix_live_view'
-import Alpine from 'alpinejs'
 import { SortableHook } from './hooks/sortable'
-
-Alpine.start()
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
