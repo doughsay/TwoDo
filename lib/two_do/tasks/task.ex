@@ -9,6 +9,7 @@ defmodule TwoDo.Tasks.Task do
 
     field :name, :string
     field :order, :integer
+    field :state, Ecto.Enum, values: [:new, :done, :archived], default: :new
 
     timestamps()
   end
@@ -16,7 +17,7 @@ defmodule TwoDo.Tasks.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:name, :order])
-    |> validate_required([:name, :order])
+    |> cast(attrs, [:name, :order, :state])
+    |> validate_required([:name, :order, :state])
   end
 end

@@ -95,5 +95,20 @@ defmodule TwoDo.TasksTest do
       assert tasks = Tasks.sort_tasks!(list, [task1, task3, task2])
       assert [{^task1, 0}, {^task3, 1}, {^task2, 2}] = Enum.map(tasks, &{&1.id, &1.order})
     end
+
+    test "complete_task!/1 marks tasks as done", context do
+      %{list: list} = context
+      %Tasks.Task{state: :new} = task = task_fixture(list)
+
+      assert %Tasks.Task{state: :done} = Tasks.complete_task!(task)
+    end
+
+    test "mark_new!/1 marks tasks as new", context do
+      %{list: list} = context
+      %Tasks.Task{state: :new} = task = task_fixture(list)
+
+      assert %Tasks.Task{state: :done} = Tasks.complete_task!(task)
+      assert %Tasks.Task{state: :new} = Tasks.mark_new!(task)
+    end
   end
 end

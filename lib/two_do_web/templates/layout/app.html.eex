@@ -1,4 +1,6 @@
-<main role="main" class="m-auto max-w-6xl p-2 sm:p-4">
+<!-- since the entire app is only live routes, this layout is not used, but
+  we'll keep it around just in case -->
+<main role="main">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
   <%= @inner_content %>

@@ -99,6 +99,32 @@ defmodule TwoDo.Tasks do
   end
 
   @doc """
+  Marks the task given by the ID as done.
+
+  ### Examples
+
+      iex> complete_task!(%Task{id: 1})
+      {:ok, %Task{id: 1, state: :done}}
+  """
+  def complete_task!(%Task{} = task) do
+    {:ok, task} = update_task(task, %{state: :done})
+    task
+  end
+
+  @doc """
+  Marks the task given by the ID as new.
+
+  ### Examples
+
+      iex> mark_new!(%Task{id: 1})
+      {:ok, %Task{id: 1, state: :new}}
+  """
+  def mark_new!(%Task{} = task) do
+    {:ok, task} = update_task(task, %{state: :new})
+    task
+  end
+
+  @doc """
   Deletes a task.
 
   ## Examples

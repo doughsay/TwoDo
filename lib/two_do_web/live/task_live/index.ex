@@ -61,6 +61,17 @@ defmodule TwoDoWeb.TaskLive.Index do
     {:noreply, assign(socket, :tasks, tasks)}
   end
 
+  def handle_event("toggle", %{"task" => task_id}, socket) do
+    task = Tasks.get_task!(task_id)
+
+    case task.state do
+      :new -> Tasks.complete_task!(task)
+      :done -> Tasks.mark_new!(task)
+    end
+
+    {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
+  end
+
   @impl true
   def handle_info(:tasks_updated, socket) do
     {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
