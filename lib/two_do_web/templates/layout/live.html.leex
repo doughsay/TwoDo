@@ -1,7 +1,9 @@
 <header class="w-full text-white bg-gray-800 shadow-md">
   <div class="m-auto max-w-6xl p-2 sm:p-4 flex flex-row place-items-center">
     <h1 class="font-bold text-lg sm:text-xl flex-grow">
-      <span class="text-blue-300">Two</span><span class="text-yellow-300">Do</span>
+      <%= link to: "/" do %>
+        <span class="text-blue-300">Two</span><span class="text-yellow-300">Do</span>
+      <% end %>
     </h1>
     <%= if url = assigns[:layout_add_url] do %>
       <div class="h-6 w-6">

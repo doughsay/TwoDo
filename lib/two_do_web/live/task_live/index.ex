@@ -23,12 +23,6 @@ defmodule TwoDoWeb.TaskLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Show Task")
-    |> assign(:task, Tasks.get_task!(id))
-  end
-
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Task")
@@ -48,13 +42,6 @@ defmodule TwoDoWeb.TaskLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    task = Tasks.get_task!(id)
-    {:ok, _} = Tasks.delete_task(task)
-
-    {:noreply, assign(socket, :tasks, Tasks.list_tasks(socket.assigns.list))}
-  end
-
   def handle_event("sort", %{"ids" => ids}, socket) do
     tasks = Tasks.sort_tasks!(socket.assigns.list, ids)
 

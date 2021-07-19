@@ -27,6 +27,16 @@ defmodule TwoDoWeb.TaskLive.FormComponent do
     save_task(socket, socket.assigns.action, task_params)
   end
 
+  def handle_event("delete", %{"id" => id}, socket) do
+    task = Tasks.get_task!(id)
+    {:ok, _} = Tasks.delete_task(task)
+
+    {:noreply,
+     socket
+     |> put_flash(:info, "Task deleted")
+     |> push_redirect(to: socket.assigns.return_to)}
+  end
+
   defp save_task(socket, :edit, task_params) do
     case Tasks.update_task(socket.assigns.task, task_params) do
       {:ok, _task} ->

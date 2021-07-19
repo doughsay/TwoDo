@@ -37,15 +37,6 @@ defmodule TwoDoWeb.TaskLiveTest do
       assert html =~ task.name
     end
 
-    test "shows task in modal", %{conn: conn, list: list, task: task} do
-      {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
-
-      assert index_live |> element("#task-#{task.id} a", "Show") |> render_click() =~
-               "Show Task"
-
-      assert_patch(index_live, Routes.task_index_path(conn, :show, list, task))
-    end
-
     test "saves new task", %{conn: conn, list: list} do
       {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
@@ -93,8 +84,18 @@ defmodule TwoDoWeb.TaskLiveTest do
     test "deletes task in listing", %{conn: conn, list: list, task: task} do
       {:ok, index_live, _html} = live(conn, Routes.task_index_path(conn, :index, list))
 
-      assert index_live |> element("#task-#{task.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#task-#{task.id}")
+      assert index_live |> element("#task-#{task.id} a", "Edit") |> render_click() =~
+               "Edit Task"
+
+      assert_patch(index_live, Routes.task_index_path(conn, :edit, list, task))
+
+      {:ok, _, html} =
+        index_live
+        |> element("#task-form a", "Delete Task")
+        |> render_click()
+        |> follow_redirect(conn, Routes.task_index_path(conn, :index, list))
+
+      assert html =~ "Task deleted"
     end
   end
 end

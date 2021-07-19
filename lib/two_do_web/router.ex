@@ -23,7 +23,6 @@ defmodule TwoDoWeb.Router do
 
     live "/:list_id/tasks", TaskLive.Index, :index
     live "/:list_id/tasks/new", TaskLive.Index, :new
-    live "/:list_id/tasks/:id", TaskLive.Index, :show
     live "/:list_id/tasks/:id/edit", TaskLive.Index, :edit
   end
 
